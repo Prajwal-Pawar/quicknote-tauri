@@ -3,15 +3,12 @@ import { useState, useEffect } from "react";
 import { writeTextFile, readTextFile, removeFile } from "@tauri-apps/api/fs";
 // to save files dialog from tauri
 import { save } from "@tauri-apps/api/dialog";
-// to get documents directory
 import { documentDir } from "@tauri-apps/api/path";
 import { note_icon, plus_icon, delete_icon } from "../assets/image/image";
 import {
-  initDB,
-  getNotesFromDB,
-  saveNoteInDB,
-  deleteNoteFromDatabase,
-} from "../utils/database";
+  getNotesFromLocalStorage,
+  setNotesInLocalStorage,
+} from "../utils/getFromLocalStorage";
 import dayjs from "dayjs";
 
 function App() {
@@ -19,32 +16,25 @@ function App() {
   const [activeNote, setActiveNote] = useState(0);
   const [activeNoteContent, setActiveNoteContent] = useState("");
 
-  // update notes state
+  // update local storage with new notes
   const updateNotes = (notes) => {
     setNotes([...notes]);
+    setNotesInLocalStorage(JSON.stringify(notes));
   };
 
-  // find notes by note.id from notes array state
-  const findNoteById = (notes, id) => {
-    return notes.find((note) => note.id === id);
-  };
+  // delete note
+  const deleteNote = async (noteId) => {
+    await removeFile(notes[noteId].location);
 
-  // delete note from database and notes state
-  const deleteNote = async (note) => {
-    // delete file from local users disk
-    await removeFile(note.location);
+    notes.splice(noteId, 1);
+    updateNotes(notes);
 
-    await deleteNoteFromDatabase(note.id);
-
-    const updatedNotes = notes.filter((n) => n.id !== note.id);
-    updateNotes(updatedNotes);
-
-    if (activeNote >= note.id) {
+    if (activeNote >= noteId) {
       setActiveNoteData(activeNote >= 1 ? activeNote - 1 : 0);
     }
   };
 
-  // add note in database and in notes state
+  // add note
   const addNote = async () => {
     const savePath = await save({
       // only show text and markdown files
@@ -57,7 +47,6 @@ function App() {
       return;
     }
 
-    // write file in local users disk
     await writeTextFile(`${savePath}.txt`, "");
 
     const newNote = {
@@ -68,54 +57,39 @@ function App() {
       location: `${savePath}.txt`,
     };
 
-    // save note in db
-    await saveNoteInDB(newNote);
-
-    // saving new note to notes state
+    // saving new note to localstorage
     updateNotes([{ ...newNote }, ...notes]);
     setActiveNote(0);
     setActiveNoteContent("");
   };
 
-  // handle text input
   const handleChange = ({ target: { value } }) => {
     const header = value.split(/\r?\n/)[0];
 
-    if (notes.length !== 0 && activeNote.title !== header) {
-      activeNote.title = header;
+    if (notes.length !== 0 && notes[activeNote].title !== header) {
+      notes[activeNote].title = header;
       updateNotes([...notes]);
     }
 
     setActiveNoteContent(value);
-    // write file in local users disk
-    writeTextFile(activeNote.location, value);
+    writeTextFile(notes[activeNote].location, value);
   };
 
-  const setActiveNoteData = async (note) => {
-    const currentNote = findNoteById(notes, note.id);
-
-    console.log("active note data", currentNote);
-
-    setActiveNote(currentNote);
+  const setActiveNoteData = async (index) => {
+    setActiveNote(index);
 
     if (notes.length === 0) {
       setActiveNoteContent("");
     } else {
-      const contents = await readTextFile(currentNote.location);
+      const contents = await readTextFile(notes[index].location);
       setActiveNoteContent(contents);
     }
   };
 
   useEffect(() => {
-    // initialize database
-    initDB();
-
     const getNotesFromStorage = async () => {
-      const myNotes = await getNotesFromDB();
+      const myNotes = await getNotesFromLocalStorage();
 
-      console.log("fetched noted", myNotes);
-
-      // set notes we got from database in state
       setNotes(myNotes);
     };
 
@@ -124,15 +98,15 @@ function App() {
 
   return (
     <div className="container flex flex flex-row h-screen">
-      <div className="container_left  w-2/5 border-2 border-slate-200">
-        <div className="container_left__header m-2">
-          <div className="container_left__header flex flex-row items-center justify-between">
+      <div className="container__left  w-2/5 border-2 border-slate-200">
+        <div className="container__left__header m-2">
+          <div className="container__left__header flex flex-row items-center justify-between">
             <div className="flex flex-row">
               <img src={note_icon} alt="Notes Icon" className="h-8 w-8 m-2.5" />
-              <p className="text-xl font-semibold m-2.5">Your Notes</p>
+              <p className="text-xl font-semibold m-2.5">My Notes</p>
             </div>
             <div
-              className="container_left_header_action flex flex-row items-center border-2 rounded-md border-red-500 w-1/4 mr-3 hover:cursor-pointer"
+              className="container__left__header__action flex flex-row items-center border-2 rounded-md border-red-500 w-1/4 mr-3 hover:cursor-pointer"
               onClick={addNote}
             >
               <img
@@ -144,36 +118,38 @@ function App() {
             </div>
           </div>
         </div>
-        <div className="container_left_content">
-          {notes.map((note, index) => (
+        <div className="container__left__content">
+          {notes.map((item, index) => (
             <div
-              key={`${note.title}_${index}`}
+              key={`${item.title}_${index}`}
+              // className={`container__left__content__row ${
+              //   index === activeNote && "active"
+              // }`}
               className="flex flex-row justify-between items-center border-t-2 border-slate-200 p-4"
-              onClick={() => setActiveNoteData(note)}
+              onClick={() => setActiveNoteData(index)}
             >
-              <div className="container_left_content_row_left">
-                <p className="container_left_content_row_left_title text-xl">
-                  {note.title || "Untitled"}
+              <div className="container__left__content__row__left">
+                <p className="container__left__content__row__left__title text-xl">
+                  {item.title || "Untitled"}
                 </p>
-                <p className="container_left_content_row_left_date text-sm text-gray-500">
-                  {note.createdAt}
+                <p className="container__left__content__row__left__date text-sm text-gray-500">
+                  {item.createdAt}
                 </p>
               </div>
 
               <img
                 src={delete_icon}
                 alt="Delete Note Icon"
-                className="container_left_content_row_action h-8 w-8"
-                // onClick={() => deleteNote(index)}
-                onClick={() => deleteNote(note)}
+                className="container__left__content__row__action h-8 w-8"
+                onClick={() => deleteNote(index)}
               />
             </div>
           ))}
         </div>
       </div>
-      <div className="container_right flex flex-col w-3/5">
-        <p className="container_right_date text-sm text-gray-500 text-center mt-2 mb-2">
-          {activeNote?.createdAt}
+      <div className="container__right flex flex-col w-3/5">
+        <p className="container__right__date text-sm text-gray-500 text-center mt-2 mb-2">
+          {notes[activeNote]?.createdAt}
         </p>
         <textarea
           name="note_input"
@@ -181,7 +157,7 @@ function App() {
           onChange={handleChange}
           value={activeNoteContent}
           className="h-screen m-4 mr-8"
-          disabled={activeNote ? false : true}
+          disabled={activeNoteContent ? false : true}
         ></textarea>
       </div>
     </div>

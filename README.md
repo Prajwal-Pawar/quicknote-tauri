@@ -8,3 +8,11 @@ other than documents/any_other_folder/ will give you and error
 for that you need to do "scope": ["$DOCUMENT/**"], to able to save your files in documents directory and its subdirectories
 
 reference : https://github.com/tauri-apps/tauri/issues/4130 (widersky comment)
+
+sqlite db reference: https://github.com/tauri-apps/tauri-plugin-sql
+
+sqlite is The project is in fact open-source, just not open-contribute. Where as MariaDB/MySQL requires a server to run, SQLite is server-less. It's self-contained, also referred to as an embedded database.
+SQLite is a single user database. It does not try to be anything else. It is just a single file on your disk and all the logic is a small library included in a program.
+If you simply need a small, fast database which is a throw away project, SQLite is probably the best option for you. It is very good single user database system.
+
+sqlite database viewer: https://inloop.github.io/sqlite-viewer/
