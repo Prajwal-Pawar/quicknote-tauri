@@ -39,8 +39,12 @@ function App() {
     const updatedNotes = notes.filter((n) => n.id !== note.id);
     updateNotes(updatedNotes);
 
-    if (activeNote >= note.id) {
-      setActiveNoteData(activeNote >= 1 ? activeNote - 1 : 0);
+    // if (activeNote >= note.id) {
+    //   setActiveNoteData(activeNote >= 1 ? activeNote - 1 : 0);
+    // }
+
+    if (activeNote.id === note.id) {
+      setActiveNote(0);
     }
   };
 
@@ -60,8 +64,12 @@ function App() {
     // write file in local users disk
     await writeTextFile(`${savePath}.txt`, "");
 
+    // set filename as notes title
+    const filename = savePath.split("/").pop();
+
     const newNote = {
-      title: "New Note",
+      // title: "New Note",
+      title: filename,
       createdAt: `${dayjs().format("ddd, DD MM YYYY")} at ${dayjs().format(
         "hh:mm A"
       )}`,
@@ -78,13 +86,18 @@ function App() {
   };
 
   // handle text input
+  /* { target: { value } } is events child, like we do event.target.value 
+    while getting text input */
   const handleChange = ({ target: { value } }) => {
-    const header = value.split(/\r?\n/)[0];
+    /* { target: { value } } is events child, like we do event.target.value 
+    while getting text input */
+    // set notes first line as notes title
+    // const header = value.split(/\r?\n/)[0];
 
-    if (notes.length !== 0 && activeNote.title !== header) {
-      activeNote.title = header;
-      updateNotes([...notes]);
-    }
+    // if (notes.length !== 0 && activeNote.title !== header) {
+    //   activeNote.title = header;
+    //   updateNotes([...notes]);
+    // }
 
     setActiveNoteContent(value);
     // write file in local users disk
@@ -148,7 +161,7 @@ function App() {
           {notes.map((note, index) => (
             <div
               key={`${note.title}_${index}`}
-              className="flex flex-row justify-between items-center border-t-2 border-slate-200 p-4"
+              className="flex flex-row justify-between items-center border-t-2 border-slate-200 p-4 hover:cursor-pointer"
               onClick={() => setActiveNoteData(note)}
             >
               <div className="container_left_content_row_left">
@@ -179,7 +192,7 @@ function App() {
           name="note_input"
           placeholder="Write Your Note Here"
           onChange={handleChange}
-          value={activeNoteContent}
+          value={activeNote ? activeNoteContent : ""}
           className="h-screen m-4 mr-8"
           disabled={activeNote ? false : true}
         ></textarea>
