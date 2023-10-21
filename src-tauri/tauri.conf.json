@@ -19,6 +19,8 @@
         "writeFile": true,
         "removeFile": true,
         "readFile": true,
+        "exists": true,
+        "createDir": true,
         "scope": ["$DOCUMENT/**"]
       },
       "path": {

@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 // to write, read, and remove files api from tauri
-import { writeTextFile, readTextFile, removeFile } from "@tauri-apps/api/fs";
+import {
+  writeTextFile,
+  readTextFile,
+  removeFile,
+  createDir,
+  exists,
+  BaseDirectory,
+} from "@tauri-apps/api/fs";
 // to save files dialog from tauri
 import { save } from "@tauri-apps/api/dialog";
 // to get documents directory
@@ -18,6 +25,37 @@ function App() {
   const [notes, setNotes] = useState([]);
   const [activeNote, setActiveNote] = useState(0);
   const [activeNoteContent, setActiveNoteContent] = useState("");
+  const [saveNotesFolderName, setSaveNotesFolderName] = useState("quicknotes");
+
+  // create a folder to save notes as soon as app launches
+  const createNotesFolder = async () => {
+    try {
+      // const folderPath = (await documentDir()) + "quicknotes";
+      const folderPath = (await documentDir()) + saveNotesFolderName;
+
+      const folderExists = await exists(folderPath);
+
+      console.log("notesfolder folderpath", folderPath, folderExists);
+
+      if (folderExists) {
+        return;
+      }
+
+      // const createFolder = await createDir(folderPath);
+      const createFolder = await createDir("quicknotes", {
+        dir: BaseDirectory.Document,
+        recursive: true,
+        sync: false,
+      });
+
+      console.log("folder created");
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  };
+
+  createNotesFolder();
 
   // update notes state
   const updateNotes = (notes) => {
@@ -54,7 +92,9 @@ function App() {
       // only show text and markdown files
       filters: [{ name: "Text/Markdown", extensions: ["txt", "md"] }],
       // defaultly open document directory
-      defaultPath: (await documentDir()) + "/",
+      // defaultPath: (await documentDir()) + "/",
+      // defaultly open quicknotes folder in document directory
+      defaultPath: (await documentDir()) + saveNotesFolderName,
     });
 
     if (!savePath) {
