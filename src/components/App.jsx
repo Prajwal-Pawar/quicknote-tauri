@@ -5,7 +5,7 @@ import { writeTextFile, readTextFile, removeFile } from "@tauri-apps/api/fs";
 import { save } from "@tauri-apps/api/dialog";
 // to get documents directory
 import { documentDir } from "@tauri-apps/api/path";
-import { note_icon, plus_icon, delete_icon } from "../assets/image/image";
+import { Clipboard, FilePlus, Trash2 } from "react-feather";
 import {
   initDB,
   getNotesFromDB,
@@ -141,19 +141,14 @@ function App() {
         <div className="container_left__header m-2">
           <div className="container_left__header flex flex-row items-center justify-between">
             <div className="flex flex-row">
-              <img src={note_icon} alt="Notes Icon" className="h-8 w-8 m-2.5" />
-              <p className="text-xl font-semibold m-2.5">Your Notes</p>
+              <Clipboard size={32} color="black" className="h-8 w-8 m-2.5" />
+              <p className="text-xl font-semibold mt-3 mb-2.5">Your Notes</p>
             </div>
             <div
-              className="container_left_header_action flex flex-row items-center border-2 rounded-md border-red-500 w-1/4 mr-3 hover:cursor-pointer"
+              className="container_left_header_action hover:cursor-pointer"
               onClick={addNote}
             >
-              <img
-                src={plus_icon}
-                alt="Add New Note Icon"
-                className="h-8 w-8"
-              />
-              <p className="text-red-500 font-semibold pl-1">New Note</p>
+              <FilePlus size={32} color="#687EFF" />
             </div>
           </div>
         </div>
@@ -173,13 +168,12 @@ function App() {
                 </p>
               </div>
 
-              <img
-                src={delete_icon}
-                alt="Delete Note Icon"
-                className="container_left_content_row_action h-8 w-8"
-                // onClick={() => deleteNote(index)}
+              <div
+                className="container_left_content_row_action"
                 onClick={() => deleteNote(note)}
-              />
+              >
+                <Trash2 size={32} color="#D80031" />
+              </div>
             </div>
           ))}
         </div>
@@ -194,6 +188,7 @@ function App() {
           onChange={handleChange}
           value={activeNote ? activeNoteContent : ""}
           className="h-screen m-4 mr-8"
+          style={{ fontFamily: "Roboto Mono" }}
           disabled={activeNote ? false : true}
         ></textarea>
       </div>

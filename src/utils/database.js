@@ -1,7 +1,17 @@
 import Database from "tauri-plugin-sql-api";
 
 // for sqlite
-const db = await Database.load("sqlite:quicknote.db");
+// const db = await Database.load("sqlite:quicknote.db");
+
+let db;
+
+const databaseInit = async () => {
+  db = await Database.load("sqlite:quicknote.db");
+
+  return db;
+};
+
+databaseInit();
 
 if (!db) {
   console.log(`Database not initialized`);
