@@ -16,3 +16,8 @@ SQLite is a single user database. It does not try to be anything else. It is jus
 If you simply need a small, fast database which is a throw away project, SQLite is probably the best option for you. It is very good single user database system.
 
 sqlite database viewer: https://inloop.github.io/sqlite-viewer/
+
+tauri just generats a binary/build for your operating system. if you are on linux, it will build a bundle for linux.
+
+for building app cross platform
+https://www.smashingmagazine.com/2020/07/tiny-desktop-apps-tauri-vuejs/
