@@ -120,7 +120,7 @@ function App() {
     await saveNoteInDB(newNote);
 
     // saving new note to notes state
-    updateNotes([{ ...newNote }, ...notes]);
+    updateNotes([...notes, { ...newNote }]);
     setActiveNote(0);
     setActiveNoteContent("");
   };
@@ -196,8 +196,9 @@ function App() {
           {notes.map((note, index) => (
             <div
               key={`${note.title}_${index}`}
-              className={`flex flex-row justify-between items-center border-t-2 border-slate-200 p-4 hover:cursor-pointer ${
-                activeNote.id === note.id ? "bg-indigo-200" : ""
+              className={`flex flex-row justify-between items-center border-t-2 border-slate-200 p-4 hover:cursor-pointer hover:bg-indigo-100 ${
+                // if note is active give some styling
+                activeNote.id === note.id ? "bg-indigo-200 m-2 rounded" : ""
               }`}
               onClick={() => setActiveNoteData(note)}
             >
@@ -229,7 +230,7 @@ function App() {
           placeholder="Write Your Note Here"
           onChange={handleChange}
           value={activeNote ? activeNoteContent : ""}
-          className="h-screen m-4 mr-8"
+          className="h-screen m-4 mr-8 p-3"
           style={{ fontFamily: "Roboto Mono" }}
           disabled={activeNote ? false : true}
         ></textarea>
