@@ -177,7 +177,7 @@ function App() {
 
   return (
     <div className="container flex flex flex-row h-screen">
-      <div className="container_left  w-2/5 border-2 border-slate-200">
+      <div className="container_left  w-1/4 border-2 border-slate-200">
         <div className="container_left__header m-2">
           <div className="container_left__header flex flex-row items-center justify-between">
             <div className="flex flex-row">
@@ -196,7 +196,9 @@ function App() {
           {notes.map((note, index) => (
             <div
               key={`${note.title}_${index}`}
-              className="flex flex-row justify-between items-center border-t-2 border-slate-200 p-4 hover:cursor-pointer"
+              className={`flex flex-row justify-between items-center border-t-2 border-slate-200 p-4 hover:cursor-pointer ${
+                activeNote.id === note.id ? "bg-indigo-200" : ""
+              }`}
               onClick={() => setActiveNoteData(note)}
             >
               <div className="container_left_content_row_left">
@@ -218,7 +220,7 @@ function App() {
           ))}
         </div>
       </div>
-      <div className="container_right flex flex-col w-3/5">
+      <div className="container_right flex flex-col w-3/4">
         <p className="container_right_date text-sm text-gray-500 text-center mt-2 mb-2">
           {activeNote?.createdAt}
         </p>
