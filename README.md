@@ -21,3 +21,6 @@ tauri just generats a binary/build for your operating system. if you are on linu
 
 for building app cross platform
 https://www.smashingmagazine.com/2020/07/tiny-desktop-apps-tauri-vuejs/
+
+dark mode referance
+https://dev.to/naomipham_/how-to-create-darklight-mode-with-react-and-tailwind-59e0

@@ -1,3 +1,11 @@
+:root {
+  --bg-light: #fefefe;
+  --bg-dark: #2e2e2e;
+
+  --text-light: #010101;
+  --text-dark: #fefefe;
+}
+
 @font-face {
   font-family: "Roboto Mono";
   src: url("../assets/fonts/RobotoMonoReg.ttf");
@@ -19,4 +27,14 @@
 
 body {
   font-family: "Roboto";
+}
+
+.light {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+.dark {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
 }

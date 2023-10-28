@@ -12,7 +12,7 @@ import {
 import { save } from "@tauri-apps/api/dialog";
 // to get documents directory
 import { documentDir } from "@tauri-apps/api/path";
-import { Edit, FileText, FilePlus, Trash2 } from "react-feather";
+import { Edit, FileText, Sun, Moon, FilePlus, Trash2 } from "react-feather";
 import {
   initDB,
   getNotesFromDB,
@@ -31,6 +31,8 @@ function App() {
   // for rendering notes in markdown
   const [renderedMarkdown, setRenderedMarkdown] = useState(activeNoteContent);
   const [isRenderingMarkdown, setIsRenderingMarkdown] = useState(false);
+  // dark mode
+  const [darkMode, setDarkMode] = useState(false);
 
   // create a folder to save notes as soon as app launches
   const createNotesFolder = async () => {
@@ -205,9 +207,18 @@ function App() {
     }
   };
 
+  // toggle dark mode
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
-    <div className="container flex flex flex-row h-screen">
-      <div className="container_left  w-1/4 border-2 border-slate-200">
+    <div
+      className={`container flex flex flex-row h-screen ${
+        darkMode ? "dark" : "light"
+      }`}
+    >
+      <div className="container_left w-1/4 border-2 border-slate-200 rounded dark:border-gray-600">
         <div className="container_left__header m-2">
           <div className="container_left__header flex flex-row items-center justify-between">
             <div
@@ -215,9 +226,24 @@ function App() {
               onClick={handleRenderMarkdown}
             >
               {isRenderingMarkdown ? (
-                <Edit size={28} color="black" className="m-2.5" />
+                <Edit
+                  size={28}
+                  color={`${darkMode ? "white" : "black"}`}
+                  className="m-2.5"
+                />
               ) : (
-                <FileText size={28} color="black" className="m-2.5" />
+                <FileText
+                  size={28}
+                  color={`${darkMode ? "white" : "black"}`}
+                  className="m-2.5"
+                />
+              )}
+            </div>
+            <div className="hover:cursor-pointer" onClick={toggleDarkMode}>
+              {darkMode ? (
+                <Sun size={28} color={`${darkMode ? "white" : "black"}`} />
+              ) : (
+                <Moon size={28} color={`${darkMode ? "white" : "black"}`} />
               )}
             </div>
             <div
@@ -232,9 +258,11 @@ function App() {
           {notes.map((note, index) => (
             <div
               key={`${note.title}_${index}`}
-              className={`flex flex-row justify-between items-center border-t-2 border-slate-200 p-4 hover:cursor-pointer hover:bg-indigo-100 ${
+              className={`flex flex-row justify-between items-center border-t-2 border-slate-200 p-4 hover:cursor-pointer hover:bg-indigo-100 dark:border-gray-600 dark:hover:bg-cyan-700 ${
                 // if note is active give some styling
-                activeNote.id === note.id ? "bg-indigo-200 m-2 rounded" : ""
+                activeNote.id === note.id
+                  ? "bg-indigo-200 m-2 rounded dark:bg-cyan-800"
+                  : ""
               }`}
               onClick={() => setActiveNoteData(note)}
             >
@@ -242,7 +270,7 @@ function App() {
                 <p className="container_left_content_row_left_title text-xl">
                   {note.title || "Untitled"}
                 </p>
-                <p className="container_left_content_row_left_date text-sm text-gray-500">
+                <p className="container_left_content_row_left_date text-sm text-gray-500 dark:text-gray-400">
                   {note.createdAt}
                 </p>
               </div>
@@ -258,13 +286,13 @@ function App() {
         </div>
       </div>
       <div className="container_right flex flex-col w-3/4">
-        <p className="container_right_date text-sm text-gray-500 text-center mt-2 mb-2">
+        <p className="container_right_date text-sm text-gray-500 text-center mt-2 mb-2 dark:text-gray-400">
           {activeNote?.createdAt}
         </p>
 
         {/* isRenderingMarkdown if textarea or markdown area is displayed */}
         {isRenderingMarkdown ? (
-          <div className="markdown-preview prose prose-stone prose-lg m-5">
+          <div className="markdown-preview prose prose-stone prose-lg m-5 dark:prose-invert">
             <div
               dangerouslySetInnerHTML={{
                 __html: renderedMarkdown,
@@ -277,7 +305,7 @@ function App() {
             placeholder="Write Your Note Here"
             onChange={handleChange}
             value={activeNote ? activeNoteContent : ""}
-            className="h-screen m-4 mr-8 p-3"
+            className="h-screen m-4 mr-8 p-3 rounded bg-stone-100 dark:bg-stone-700"
             style={{ fontFamily: "Roboto Mono" }}
             disabled={activeNote ? false : true}
           ></textarea>
