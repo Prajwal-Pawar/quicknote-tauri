@@ -19,6 +19,8 @@ import {
   saveNoteInDB,
   deleteNoteFromDatabase,
 } from "../utils/database";
+// for using markdown format
+import { marked } from "marked";
 import dayjs from "dayjs";
 
 function App() {
@@ -26,6 +28,9 @@ function App() {
   const [activeNote, setActiveNote] = useState(0);
   const [activeNoteContent, setActiveNoteContent] = useState("");
   const [saveNotesFolderName, setSaveNotesFolderName] = useState("quicknotes");
+  // for rendering notes in markdown
+  const [renderedMarkdown, setRenderedMarkdown] = useState(activeNoteContent);
+  const [isRenderingMarkdown, setIsRenderingMarkdown] = useState(false);
 
   // create a folder to save notes as soon as app launches
   const createNotesFolder = async () => {
@@ -175,14 +180,38 @@ function App() {
     getNotesFromStorage();
   }, []);
 
+  const handleRenderMarkdown = () => {
+    if (activeNoteContent) {
+      marked.setOptions({
+        renderer: new marked.Renderer(),
+        gfm: true,
+        tables: true,
+        breaks: false,
+        pedantic: false,
+        sanitize: true,
+        smartLists: true,
+        smartypants: false,
+        highlight: function (code) {
+          return hljs.highlightAuto(code).value;
+        },
+      });
+
+      const renderMarkdown = marked(activeNoteContent, { sanitize: true });
+      // Update the component's state with the rendered markdown/HTML
+      setRenderedMarkdown(renderMarkdown);
+      // toggling textarea and markdown rendering area
+      setIsRenderingMarkdown(!isRenderingMarkdown);
+    }
+  };
+
   return (
     <div className="container flex flex flex-row h-screen">
       <div className="container_left  w-1/4 border-2 border-slate-200">
         <div className="container_left__header m-2">
           <div className="container_left__header flex flex-row items-center justify-between">
-            <div className="flex flex-row">
+            <div className="flex flex-row" onClick={handleRenderMarkdown}>
               <Clipboard size={32} color="black" className="h-8 w-8 m-2.5" />
-              <p className="text-xl font-semibold mt-3 mb-2.5">Your Notes</p>
+              {/* <p className="text-xl font-semibold mt-3 mb-2.5">Your Notes</p> */}
             </div>
             <div
               className="container_left_header_action hover:cursor-pointer"
@@ -225,15 +254,27 @@ function App() {
         <p className="container_right_date text-sm text-gray-500 text-center mt-2 mb-2">
           {activeNote?.createdAt}
         </p>
-        <textarea
-          name="note_input"
-          placeholder="Write Your Note Here"
-          onChange={handleChange}
-          value={activeNote ? activeNoteContent : ""}
-          className="h-screen m-4 mr-8 p-3"
-          style={{ fontFamily: "Roboto Mono" }}
-          disabled={activeNote ? false : true}
-        ></textarea>
+
+        {/* isRenderingMarkdown if textarea or markdown area is displayed */}
+        {isRenderingMarkdown ? (
+          <div className="markdown-preview prose prose-stone prose-lg m-5">
+            <div
+              dangerouslySetInnerHTML={{
+                __html: renderedMarkdown,
+              }}
+            ></div>
+          </div>
+        ) : (
+          <textarea
+            name="note_input"
+            placeholder="Write Your Note Here"
+            onChange={handleChange}
+            value={activeNote ? activeNoteContent : ""}
+            className="h-screen m-4 mr-8 p-3"
+            style={{ fontFamily: "Roboto Mono" }}
+            disabled={activeNote ? false : true}
+          ></textarea>
+        )}
       </div>
     </div>
   );
