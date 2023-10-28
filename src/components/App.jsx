@@ -12,7 +12,7 @@ import {
 import { save } from "@tauri-apps/api/dialog";
 // to get documents directory
 import { documentDir } from "@tauri-apps/api/path";
-import { Clipboard, FilePlus, Trash2 } from "react-feather";
+import { Edit, FileText, FilePlus, Trash2 } from "react-feather";
 import {
   initDB,
   getNotesFromDB,
@@ -119,6 +119,7 @@ function App() {
         "hh:mm A"
       )}`,
       location: `${savePath}.txt`,
+      // location: `${savePath}.md`,
     };
 
     // save note in db
@@ -209,15 +210,21 @@ function App() {
       <div className="container_left  w-1/4 border-2 border-slate-200">
         <div className="container_left__header m-2">
           <div className="container_left__header flex flex-row items-center justify-between">
-            <div className="flex flex-row" onClick={handleRenderMarkdown}>
-              <Clipboard size={32} color="black" className="h-8 w-8 m-2.5" />
-              {/* <p className="text-xl font-semibold mt-3 mb-2.5">Your Notes</p> */}
+            <div
+              className="flex flex-row hover:cursor-pointer"
+              onClick={handleRenderMarkdown}
+            >
+              {isRenderingMarkdown ? (
+                <Edit size={28} color="black" className="m-2.5" />
+              ) : (
+                <FileText size={28} color="black" className="m-2.5" />
+              )}
             </div>
             <div
               className="container_left_header_action hover:cursor-pointer"
               onClick={addNote}
             >
-              <FilePlus size={32} color="#687EFF" />
+              <FilePlus size={28} color="#687EFF" />
             </div>
           </div>
         </div>
@@ -244,7 +251,7 @@ function App() {
                 className="container_left_content_row_action"
                 onClick={() => deleteNote(note)}
               >
-                <Trash2 size={32} color="#D80031" />
+                <Trash2 size={28} color="#D80031" />
               </div>
             </div>
           ))}

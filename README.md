@@ -21,12 +21,3 @@ tauri just generats a binary/build for your operating system. if you are on linu
 
 for building app cross platform
 https://www.smashingmagazine.com/2020/07/tiny-desktop-apps-tauri-vuejs/
-
-for markdown
-https://remarkjs.github.io/react-markdown/
-https://blog.logrocket.com/how-to-safely-render-markdown-using-react-markdown/
-
-for more references
-https://reactjsexample.com/markdown-note-maker-with-git-sync-using-tauri/
-https://github.com/nilaysavant/mediocre?ref=reactjsexample.com
-https://github.com/maqi1520/mdx-editor
