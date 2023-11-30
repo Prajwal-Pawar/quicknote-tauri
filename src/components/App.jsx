@@ -292,7 +292,11 @@ function App() {
 
         {/* isRenderingMarkdown if textarea or markdown area is displayed */}
         {isRenderingMarkdown ? (
-          <div className="markdown-preview prose prose-stone prose-lg m-5 dark:prose-invert">
+          <div
+            className="markdown-preview prose prose-stone prose-lg m-5 dark:prose-invert"
+            // change this for scroll view
+            style={{ maxHeight: "100vh", overflowY: "auto" }}
+          >
             <div
               dangerouslySetInnerHTML={{
                 __html: renderedMarkdown,
