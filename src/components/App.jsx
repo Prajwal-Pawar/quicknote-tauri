@@ -220,7 +220,7 @@ function App() {
 
   return (
     <div
-      className={`container flex flex flex-row h-screen ${
+      className={`w-full flex flex-row m-auto h-screen ${
         darkMode ? "dark" : "light"
       }`}
     >
