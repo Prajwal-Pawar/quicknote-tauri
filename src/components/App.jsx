@@ -224,7 +224,7 @@ function App() {
         darkMode ? "dark" : "light"
       }`}
     >
-      <div className="container_left w-1/4 border-2 border-slate-200 rounded dark:border-gray-600">
+      <div className="container_left w-1/4 border-2 border-slate-200 rounded dark:border-gray-600 m-3">
         <div className="container_left__header m-2">
           <div className="container_left__header flex flex-row items-center justify-between">
             <div
@@ -294,15 +294,15 @@ function App() {
           ))}
         </div>
       </div>
-      <div className="container_right flex flex-col w-3/4">
-        <p className="container_right_date text-sm text-gray-500 text-center mt-2 mb-2 dark:text-gray-400">
+      <div className="container_right flex flex-col w-3/4 border-2 border-slate-200 rounded dark:border-gray-600 m-3">
+        <p className="container_right_date text-sm text-gray-500 text-center mt-3 mb-2 dark:text-gray-400">
           {activeNote?.createdAt}
         </p>
 
         {/* isRenderingMarkdown if textarea or markdown area is displayed */}
         {isRenderingMarkdown ? (
           <div
-            className="markdown-preview prose prose-stone prose-lg m-5 dark:prose-invert"
+            className="markdown-preview prose prose-stone prose-lg m-5 dark:prose-invert max-w-none"
             // change this for scroll view
             style={{ maxHeight: "100vh", overflowY: "auto" }}
           >
