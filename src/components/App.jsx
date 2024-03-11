@@ -12,7 +12,12 @@ import {
 import { save } from "@tauri-apps/api/dialog";
 // to get documents directory
 import { documentDir } from "@tauri-apps/api/path";
-import { Edit, FileText, Sun, Moon, FilePlus, Trash2 } from "react-feather";
+// icons
+import { MdEditNote, MdOutlineWbSunny } from "react-icons/md";
+import { AiOutlineFileText } from "react-icons/ai";
+import { FiMoon, FiFilePlus } from "react-icons/fi";
+import { IoMdTrash } from "react-icons/io";
+// database
 import {
   initDB,
   getNotesFromDB,
@@ -109,7 +114,8 @@ function App() {
     }
 
     // write file in local users disk
-    await writeTextFile(`${savePath}.txt`, "");
+    // await writeTextFile(`${savePath}.txt`, "");
+    await writeTextFile(`${savePath}.md`, "");
 
     // set filename as notes title
     const filename = savePath.split("/").pop();
@@ -120,8 +126,8 @@ function App() {
       createdAt: `${dayjs().format("ddd, DD MM YYYY")} at ${dayjs().format(
         "hh:mm A"
       )}`,
-      location: `${savePath}.txt`,
-      // location: `${savePath}.md`,
+      // location: `${savePath}.txt`,
+      location: `${savePath}.md`,
     };
 
     // save note in db
@@ -226,13 +232,13 @@ function App() {
               onClick={handleRenderMarkdown}
             >
               {isRenderingMarkdown ? (
-                <Edit
+                <MdEditNote
                   size={28}
                   color={`${darkMode ? "white" : "black"}`}
                   className="m-2.5"
                 />
               ) : (
-                <FileText
+                <AiOutlineFileText
                   size={28}
                   color={`${darkMode ? "white" : "black"}`}
                   className="m-2.5"
@@ -241,16 +247,19 @@ function App() {
             </div>
             <div className="hover:cursor-pointer" onClick={toggleDarkMode}>
               {darkMode ? (
-                <Sun size={28} color={`${darkMode ? "white" : "black"}`} />
+                <MdOutlineWbSunny
+                  size={28}
+                  color={`${darkMode ? "white" : "black"}`}
+                />
               ) : (
-                <Moon size={28} color={`${darkMode ? "white" : "black"}`} />
+                <FiMoon size={28} color={`${darkMode ? "white" : "black"}`} />
               )}
             </div>
             <div
               className="container_left_header_action hover:cursor-pointer"
               onClick={addNote}
             >
-              <FilePlus size={28} color="#687EFF" />
+              <FiFilePlus size={28} color="#687EFF" />
             </div>
           </div>
         </div>
@@ -279,7 +288,7 @@ function App() {
                 className="container_left_content_row_action"
                 onClick={() => deleteNote(note)}
               >
-                <Trash2 size={28} color="#D80031" />
+                <IoMdTrash size={28} color="#D80031" />
               </div>
             </div>
           ))}
