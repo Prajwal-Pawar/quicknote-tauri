@@ -38,3 +38,23 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-dark);
 }
+
+/* custom scrollbar */
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  background: #acacac;
+}
+/* handle */
+::-webkit-scrollbar-thumb {
+  background: #757575;
+  border-radius: 10px;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #696969;
+  border-radius: 10px;
+}
